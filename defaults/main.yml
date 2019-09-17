@@ -1,0 +1,3 @@
+---
+vackerapi_port: 3599
+vackerapi_docroot: /var/www/vacker-api

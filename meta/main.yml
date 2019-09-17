@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  role_name: vacker-api
+  author: phizzl
+
+dependencies:
+  - role: phizzl.vacker
+  - role: geerlingguy.nginx
+    become: yes
+    vars:
+      nginx_vhosts:
+          - listen: "{{ vackerapi_port }}"
+            server_name: _
+            root: "{{ vackerapi_docroot }}"
+            index: index.html
+            state: present
+            filename: vacker-api.conf

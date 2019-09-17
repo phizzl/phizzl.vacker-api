@@ -1,0 +1,10 @@
+Host {{ inventory_hostname }}
+	HostName {{ inventory_hostname }}
+	User {{ vd_vagrant_user | default(ansible_user) }}
+	ForwardAgent yes
+
+Host {{ inventory_hostname }}-{{ uuid.stdout }}
+	HostName 127.0.0.1
+	Port {{ port.stdout }}
+	User vagrant
+	ProxyCommand ssh -W %h:%p {{ inventory_hostname }}

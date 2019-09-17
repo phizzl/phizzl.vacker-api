@@ -1,0 +1,31 @@
+---
+- name: Create VM summaries
+  include_tasks: summarize-vm.yml
+  loop: "{{ vd_docker_compose_src }}"
+  loop_control:
+    loop_var: vd
+
+- name: Create docroot
+  file:
+    state: directory
+    path: "{{ vackerapi_docroot }}"
+    owner: "{{ nginx_user | default('nginx') }}"
+  become: yes
+
+- name: Truncate index.csv
+  shell: "> {{ vackerapi_docroot }}/index.html.new"
+  become: yes
+
+- name: Summarzize content of VMs
+  shell: "cat {{ item.dest }}/.vd_summary >> {{ vackerapi_docroot }}/index.html.new"
+  loop: "{{ vd_docker_compose_src }}"
+  become: yes
+
+- name: Move summary
+  shell: "mv -fv {{ vackerapi_docroot }}/index.html.new {{ vackerapi_docroot }}/index.html"
+  become: yes
+
+- name: Copy SSH configs
+  shell: "cat {{ item.dest }}/.vd_ssh_config >> {{ vackerapi_docroot }}/ssh-$(cat {{ item.dest }}/.vd_id)"
+  loop: "{{ vd_docker_compose_src }}"
+  become: yes
